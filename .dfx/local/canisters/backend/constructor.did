@@ -1,0 +1,121 @@
+type UserProfile = 
+ record {
+   createdAt: int;
+   lastActive: int;
+   learningProgress: vec CompletedTopic;
+   preferences: UserPreferences;
+   "principal": principal;
+ };
+type UserPreferences = 
+ record {
+   difficultyLevel: DifficultyLevel;
+   language: text;
+   preferredTopics: vec text;
+ };
+type TokenUsage = 
+ record {
+   completionTokens: nat;
+   promptTokens: nat;
+   totalTokens: nat;
+ };
+type SessionResponse = 
+ record {
+   error: opt text;
+   session: opt ChatSession;
+   success: bool;
+ };
+type Result = 
+ variant {
+   err: text;
+   ok: vec Message__1;
+ };
+type Message__1 = 
+ record {
+   content: text;
+   id: nat;
+   sender: MessageSender;
+   sessionId: text;
+   timestamp: int;
+ };
+type MessageSender = 
+ variant {
+   Assistant;
+   User;
+ };
+type Message = 
+ record {
+   content: text;
+   id: nat;
+   sender: MessageSender;
+   sessionId: text;
+   timestamp: int;
+ };
+type LearningTopic = 
+ record {
+   content: text;
+   createdAt: int;
+   description: text;
+   difficulty: DifficultyLevel;
+   id: text;
+   tags: vec text;
+   title: text;
+ };
+type LLMResponse = 
+ record {
+   content: text;
+   error: opt text;
+   usage: opt TokenUsage;
+ };
+type LLMRequest = 
+ record {
+   context: opt text;
+   maxTokens: opt nat;
+   prompt: text;
+   temperature: opt float64;
+ };
+type DifficultyLevel = 
+ variant {
+   Advanced;
+   Beginner;
+   Intermediate;
+ };
+type CompletedTopic = 
+ record {
+   completedAt: int;
+   score: opt nat;
+   topicId: text;
+ };
+type ChatSession = 
+ record {
+   createdAt: int;
+   id: text;
+   messages: vec Message;
+   topic: opt text;
+   updatedAt: int;
+   userId: opt principal;
+ };
+type ChatResponse = 
+ record {
+   error: opt text;
+   message: opt Message;
+   success: bool;
+ };
+service : {
+  addLearningTopic: (LearningTopic) -> (bool);
+  askQuestion: (text, text) -> (ChatResponse);
+  createChatSession: (opt principal, opt text) -> (SessionResponse);
+  createUserProfile: (principal, UserPreferences) -> (bool);
+  getChatSession: (text) -> (SessionResponse);
+  getLearningTopic: (text) -> (opt LearningTopic);
+  getLearningTopics: () -> (vec LearningTopic);
+  getSessionCount: () -> (nat);
+  getSessionMessages: (text) -> (Result);
+  getTopicCount: () -> (nat);
+  getUserCount: () -> (nat);
+  getUserProfile: (principal) -> (opt UserProfile);
+  healthCheck: () -> (text);
+  initializeSampleTopics: () -> (bool);
+  processLLMRequest: (LLMRequest) -> (LLMResponse);
+  sendMessage: (text, text, MessageSender) -> (ChatResponse);
+  updateUserProfile: (principal, UserPreferences) -> (bool);
+}

@@ -1,0 +1,54 @@
+// Version: 1.0.0
+type ChatSession =
+  {
+    createdAt : Int;
+    id : Text;
+    messages : [Message];
+    topic : ?Text;
+    updatedAt : Int;
+    userId : ?Principal
+  };
+type ChatSession__1 = ChatSession;
+type CompletedTopic = {completedAt : Int; score : ?Nat; topicId : Text};
+type DifficultyLevel = {#Advanced; #Beginner; #Intermediate};
+type LearningTopic =
+  {
+    content : Text;
+    createdAt : Int;
+    description : Text;
+    difficulty : DifficultyLevel;
+    id : Text;
+    tags : [Text];
+    title : Text
+  };
+type LearningTopic__1 = LearningTopic;
+type Message =
+  {
+    content : Text;
+    id : Nat;
+    sender : MessageSender;
+    sessionId : Text;
+    timestamp : Int
+  };
+type MessageSender = {#Assistant; #User};
+type UserPreferences =
+  {
+    difficultyLevel : DifficultyLevel;
+    language : Text;
+    preferredTopics : [Text]
+  };
+type UserProfile =
+  {
+    createdAt : Int;
+    lastActive : Int;
+    learningProgress : [CompletedTopic];
+    preferences : UserPreferences;
+    principal : Principal
+  };
+type UserProfile__1 = UserProfile;
+actor {
+  stable var nextMessageId : Nat;
+  stable var sessionsEntries : [(Text, ChatSession__1)];
+  stable var topicsEntries : [(Text, LearningTopic__1)];
+  stable var userProfilesEntries : [(Principal, UserProfile__1)]
+};
